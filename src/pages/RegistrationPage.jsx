@@ -45,7 +45,7 @@ export default function RegistrationPage() {
         }
       });
 
-      const response = await api.post("registration", payload);
+      const response = await api.post("/registration", payload);
       Swal.fire({
         icon: 'success',
         title: 'Registrasi Sukses',
