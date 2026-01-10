@@ -36,7 +36,7 @@ export default function TopUpPage() {
     setTopUpAmount(amount.toLocaleString("id-ID"));
   };
 
-  const handlePreSubmit = async (e) => {
+  const handlePreSubmit = (e) => {
     e.preventDefault();
 
     const numericAmount = Number(topUpAmount.replace(/\./g, ""));
