@@ -6,12 +6,16 @@ import api from "../services/api";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../redux/slices/authSlice";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -31,6 +35,8 @@ export default function LoginPage() {
         }
       });
       const response = await api.post("/login", payload);
+      const token = response.data.data.token;
+      dispatch(loginSuccess({token: token}))
       Swal.close();
       navigate('/');
     } catch (error) {

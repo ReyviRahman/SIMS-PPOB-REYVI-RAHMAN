@@ -11,7 +11,7 @@ export default function TopUpPage() {
         <h1 className="text-lg font-medium">Silahkan masukan</h1>
         <h1 className="text-2xl font-semibold">Nominal Top Up</h1>
         <div className="flex sm:flex-row flex-col mt-10 gap-4">
-          <div className="grow space-y-4">
+          <form className="grow space-y-4">
             <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300">
               <div className={topUpAmount ? "text-black" : "text-gray-400"}>
                 <Banknote size={15} />
@@ -30,7 +30,7 @@ export default function TopUpPage() {
             <button className="bg-gray-400 w-full text-white rounded-md py-2 font-semibold cursor-pointer">
               Top Up
             </button>
-          </div>
+          </form>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div className="px-4 text-sm flex items-center justify-center sm:py-0 py-2 text-center outline-1 outline-gray-300 rounded-md">
               Rp.10.000
