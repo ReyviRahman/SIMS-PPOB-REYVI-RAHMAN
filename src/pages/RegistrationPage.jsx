@@ -15,6 +15,8 @@ export default function RegistrationPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [errorConfirm, setErrorConfirm] = useState(false);
+  const [errorPassword, setErrorPassword] = useState("");
+  const [errorEmail, setErrorEmail] = useState("");
 
   const navigate = useNavigate();
 
@@ -22,6 +24,9 @@ export default function RegistrationPage() {
     e.preventDefault();
     if (password !== passwordConfirm) {
       setErrorConfirm(true);
+      if (password.length >= 8) {
+        setErrorPassword("");
+      }
       return;
     } else {
       setErrorConfirm(false);
@@ -36,32 +41,39 @@ export default function RegistrationPage() {
       };
 
       Swal.fire({
-        title: 'Sedang Memproses...',
-        text: 'Mohon tunggu sebentar',
-        allowOutsideClick: false, 
-        showConfirmButton: false, 
+        title: "Sedang Memproses...",
+        text: "Mohon tunggu sebentar",
+        allowOutsideClick: false,
+        showConfirmButton: false,
         willOpen: () => {
-            Swal.showLoading(); 
-        }
+          Swal.showLoading();
+        },
       });
 
       const response = await api.post("/registration", payload);
       Swal.fire({
-        icon: 'success',
-        title: 'Registrasi Sukses',
+        icon: "success",
+        title: "Registrasi Sukses",
         text: response.data.message,
-        confirmButtonText: 'Lanjut Login',
+        confirmButtonText: "Lanjut Login",
       }).then(() => {
         navigate("/login");
-      })
+      });
     } catch (error) {
       console.error("Register Error", error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Registrasi Gagal',
-        text: error.response?.data?.message || "Terjadi kesalahan sistem"
-      })
-    } 
+      Swal.close();
+      setErrorEmail("");
+      setErrorPassword("");
+      const errorMessage =
+        error.response?.data?.message || "Terjadi kesalahan sistem";
+      const lowerMsg = errorMessage.toLowerCase();
+      if (lowerMsg.includes("email")) {
+        setErrorEmail(errorMessage);
+      }
+      if (lowerMsg.includes("password")) {
+        setErrorPassword(errorMessage);
+      }
+    }
   };
 
   return (
@@ -77,20 +89,27 @@ export default function RegistrationPage() {
           </h1>
           <form onSubmit={handleRegister}>
             <div className="space-y-8 mt-8">
-              <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300">
-                <div className={email ? "text-black" : "text-gray-400"}>
-                  <AtSign size={15} />
+              <div>
+                <div className={`flex items-center rounded-md bg-white pl-3 outline-1 ${errorEmail ? ' outline-red-600' : ' outline-gray-300'}`}>
+                  <div className={errorEmail ? 'text-red-600' : email ? "text-black" : "text-gray-400"}>
+                    <AtSign size={15} />
+                  </div>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="masukan email anda"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="block min-w-0 grow bg-white py-2 pr-3 pl-1  text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                    required
+                  />
                 </div>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="masukan email anda"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="block min-w-0 grow bg-white py-2 pr-3 pl-1  text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                  required
-                />
+                {errorEmail && (
+                  <p className="text-red-500 text-xs text-right mt-1">
+                    {errorEmail}
+                  </p>
+                )}
               </div>
               <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300">
                 <div className={firstName ? "text-black" : "text-gray-400"}>
@@ -122,31 +141,60 @@ export default function RegistrationPage() {
                   required
                 />
               </div>
-              <div className="flex items-center rounded-md bg-white px-3 outline-1 outline-gray-300">
-                <div className={password ? "text-black" : "text-gray-400"}>
-                  <LockKeyhole size={15} />
-                </div>
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="buat password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="block min-w-0 grow bg-white py-2 pr-3 pl-1  text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                  required
-                />
+              <div>
                 <div
-                  className={"text-gray-400 cursor-pointer"}
-                  onClick={() => setShowPassword(!showPassword)}
+                  className={`flex items-center rounded-md bg-white px-3 outline-1 ${
+                    errorPassword ? "outline-red-500" : "outline-gray-300"
+                  }`}
                 >
-                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                  <div
+                    className={
+                      errorPassword
+                        ? "text-red-500"
+                        : password
+                        ? "text-black"
+                        : "text-gray-400"
+                    }
+                  >
+                    <LockKeyhole size={15} />
+                  </div>
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="buat password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="block min-w-0 grow bg-white py-2 pr-3 pl-1  text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                    required
+                  />
+                  <div
+                    className={"text-gray-400 cursor-pointer"}
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </div>
                 </div>
+                {errorPassword && (
+                  <p className="text-red-500 text-xs text-right mt-1">
+                    {errorPassword}
+                  </p>
+                )}
               </div>
               <div>
-                <div className={`flex items-center rounded-md bg-white px-3 outline-1 ${errorConfirm ? 'outline-red-500' : 'outline-gray-300'}`}>
+                <div
+                  className={`flex items-center rounded-md bg-white px-3 outline-1 ${
+                    errorConfirm ? "outline-red-500" : "outline-gray-300"
+                  }`}
+                >
                   <div
-                    className={errorConfirm ? 'text-red-500' : (passwordConfirm ? "text-black" : "text-gray-400")}
+                    className={
+                      errorConfirm
+                        ? "text-red-500"
+                        : passwordConfirm
+                        ? "text-black"
+                        : "text-gray-400"
+                    }
                   >
                     <LockKeyhole size={15} />
                   </div>
@@ -171,7 +219,11 @@ export default function RegistrationPage() {
                     )}
                   </div>
                 </div>
-                {errorConfirm && <p className="text-red-500 text-xs text-right mt-1">password tidak sama</p>}
+                {errorConfirm && (
+                  <p className="text-red-500 text-xs text-right mt-1">
+                    password tidak sama
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex mt-8">
@@ -180,7 +232,12 @@ export default function RegistrationPage() {
               </button>
             </div>
           </form>
-          <p className="text-sm text-center mt-5 text-gray-600">sudah punya akun? login <Link to={'/login'} className="text-red-500">di sini</Link> </p>
+          <p className="text-sm text-center mt-5 text-gray-600">
+            sudah punya akun? login{" "}
+            <Link to={"/login"} className="text-red-500">
+              di sini
+            </Link>{" "}
+          </p>
         </div>
       </div>
       <div className="h-screen">

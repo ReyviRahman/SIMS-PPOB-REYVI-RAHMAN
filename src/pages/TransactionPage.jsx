@@ -89,11 +89,19 @@ export default function TransactionPage() {
         );
       })}
 
+      {!isLoading && transactions.length === 0 && (
+        <div className="text-center text-gray-400 mt-10">
+          Belum ada transaksi.
+        </div>
+      )}
+
       {hasMore && (
         <div className="flex justify-center">
-          <button className="text-center mt-4 font-medium text-red-500 cursor-pointer disabled:opacity-50 disabled:cursor-default"
+          <button
+            className="text-center mt-4 font-medium text-red-500 cursor-pointer disabled:opacity-50 disabled:cursor-default"
             onClick={handleShowMore}
-            disabled={isLoading}>
+            disabled={isLoading}
+          >
             {isLoading ? "Loading..." : "Show More"}
           </button>
         </div>

@@ -1,4 +1,4 @@
-import { AtSign, LockKeyhole, UserRound, Eye, EyeOff } from "lucide-react";
+import { AtSign, LockKeyhole, UserRound, Eye, EyeOff, X } from "lucide-react";
 import illustrasiLogin from "../assets/illustrasi-login.png";
 import logo from "../assets/logo.png";
 import { useState } from "react";
@@ -13,6 +13,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [errorLogin, setErrorLogin] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -26,27 +27,26 @@ export default function LoginPage() {
         password: password,
       };
       Swal.fire({
-        title: 'Sedang Memproses...',
-        text: 'Mohon tunggu sebentar',
-        allowOutsideClick: false, 
-        showConfirmButton: false, 
+        title: "Sedang Memproses...",
+        text: "Mohon tunggu sebentar",
+        allowOutsideClick: false,
+        showConfirmButton: false,
         willOpen: () => {
-            Swal.showLoading(); 
-        }
+          Swal.showLoading();
+        },
       });
       const response = await api.post("/login", payload);
       const token = response.data.data.token;
-      dispatch(loginSuccess({token: token}))
+      dispatch(loginSuccess({ token: token }));
       Swal.close();
-      navigate('/');
+      navigate("/");
     } catch (error) {
       console.error("Login Error", error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Login Gagal',
-        text: error.response?.data?.message || "Terjadi kesalahan sistem"
-      })
-    } 
+      Swal.close();
+      setErrorLogin(
+        error.response?.data?.message || "Terjadi kesalahan sistem"
+      );
+    }
   };
 
   return (
@@ -77,8 +77,20 @@ export default function LoginPage() {
                   required
                 />
               </div>
-              <div className="flex items-center rounded-md bg-white px-3 outline-1 outline-gray-300">
-                <div className={password ? "text-black" : "text-gray-400"}>
+              <div
+                className={`flex items-center rounded-md bg-white px-3 outline-1 ${
+                  errorLogin ? "outline-red-600" : "outline-gray-300"
+                }`}
+              >
+                <div
+                  className={
+                    errorLogin
+                      ? "text-red-600"
+                      : password
+                      ? "text-black"
+                      : "text-gray-400"
+                  }
+                >
                   <LockKeyhole size={15} />
                 </div>
                 <input
@@ -105,7 +117,15 @@ export default function LoginPage() {
               </button>
             </div>
           </form>
-          <p className="text-sm text-center mt-5 text-gray-600">belum punya akun? registrasi <Link to={'/register'} className="text-red-500">di sini</Link> </p>
+          <p className="text-sm text-center mt-5 text-gray-600">
+            belum punya akun? registrasi <Link to={"/register"} className="text-red-500"> di sini</Link>
+          </p>
+          {errorLogin && 
+            <div className="bg-red-200 mt-20 px-4 py-2 rounded flex justify-between items-center">
+              <h1 className="text-red-600 text-sm">{errorLogin}</h1>
+              <X onClick={() => setErrorLogin("")} className="text-red-600 text-sm cursor-pointer" size={12}>x</X>
+            </div>
+          }
         </div>
       </div>
       <div className="h-screen">

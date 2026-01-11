@@ -43,8 +43,19 @@ export default function HomePage() {
       <div className="container mx-auto py-6 sm:px-20 px-4">
         <SaldoInformation />
         {isLoading ? (
-          <div className="mt-10 text-center text-gray-500">
-            Memuat layanan...
+          <div className="grid grid-cols-2 sm:grid-cols-12 mt-10 gap-4">
+            <div className="animate-pulse bg-gray-300 w-full h-20 rounded-md"></div>
+            <div className="animate-pulse bg-gray-300 w-full h-20 rounded-md"></div>
+            <div className="animate-pulse bg-gray-300 w-full h-20 rounded-md"></div>
+            <div className="animate-pulse bg-gray-300 w-full h-20 rounded-md"></div>
+            <div className="animate-pulse bg-gray-300 w-full h-20 rounded-md"></div>
+            <div className="animate-pulse bg-gray-300 w-full h-20 rounded-md"></div>
+            <div className="animate-pulse bg-gray-300 w-full h-20 rounded-md"></div>
+            <div className="animate-pulse bg-gray-300 w-full h-20 rounded-md"></div>
+            <div className="animate-pulse bg-gray-300 w-full h-20 rounded-md"></div>
+            <div className="animate-pulse bg-gray-300 w-full h-20 rounded-md"></div>
+            <div className="animate-pulse bg-gray-300 w-full h-20 rounded-md"></div>
+            <div className="animate-pulse bg-gray-300 w-full h-20 rounded-md"></div>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-12 mt-10">
@@ -70,8 +81,11 @@ export default function HomePage() {
       <div className="px-4 sm:pl-31">
         <h1 className="font-medium">Temukan promo menarik</h1>
         {isLoadingBanner ? (
-          <div className="text-center text-gray-500 mt-5">
-            Memuat layanan...
+          <div className="grid grid-cols-2 sm:grid-cols-4 mt-10 gap-8">
+            <div className="animate-pulse bg-gray-300 w-full h-30 rounded-md"></div>
+            <div className="animate-pulse bg-gray-300 w-full h-30 rounded-md"></div>
+            <div className="animate-pulse bg-gray-300 w-full h-30 rounded-md"></div>
+            <div className="animate-pulse bg-gray-300 w-full h-30 rounded-md"></div>
           </div>
         ) : (
           <BannerWidget banners={banners} />
